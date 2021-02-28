@@ -5,7 +5,7 @@ namespace SteamCMD
 {
 	public class SteamCMDBuilder
 	{
-		private string args = null;
+		private string args = "";
 
 		public OSPlatform sSteamCmdForcePlatformType
 		{
@@ -36,23 +36,34 @@ namespace SteamCMD
 			}
 		}
 
+		public SteamCMDBuilder(bool autoupdate = true)
+		{
+			if (autoupdate)
+			{
+				SteamCMDDownloader.Download();
+			}
+		}
+
 		public void Run()
 		{
-			Process process = Process.Start(
-				new ProcessStartInfo(
-					"steamcmd",
-					args + " +quit"
-				)
-			);
+			lock (args)
+			{
+				Process process = Process.Start(
+					new ProcessStartInfo(
+						"steamcmd",
+						args + " +quit"
+					)
+				);
 
-			process.WaitForExit();
+				process.WaitForExit();
+			}
 		}
 
 		public SteamCMDBuilder Login(string account = "anonymous", string password = null, string steamguard = null)
 		{
 			lock (args)
 			{
-				args += $"+login {account}";
+				args += $" +login {account}";
 				if (password is not null)
 				{
 					args += " " + password;
@@ -69,6 +80,26 @@ namespace SteamCMD
 			sSteamCmdForcePlatformType = platform;
 			return this;
 		}
+		public SteamCMDBuilder WithAppUpdate(string appid, bool validate = true, string beta = null, string betapassword = null)
+		{
+			lock (args)
+			{
+				args += $" +app_update {appid}";
 
+				if (beta is not null) args += $" -beta {beta}";
+				if (betapassword is not null) args += $" -betapassword {betapassword}";
+
+				if (validate) args += " validate";
+			}
+			return this;
+		}
+		public SteamCMDBuilder WithAppSetConfig(string appid, string name, string value)
+		{
+			lock (args)
+			{
+				args += $" +app_set_config {appid} {name} {value}";
+			}
+			return this;
+		}
 	}
 }
