@@ -44,6 +44,7 @@ namespace SteamCMD
 			else
 			{
 				Tar.ExtractTarGz(stream, ".");
+				File.SetAttributes("steamcmd.sh", FileAttributes.ReadOnly);
 			}
 		}
 	}
