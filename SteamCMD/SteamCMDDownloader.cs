@@ -45,7 +45,7 @@ namespace SteamCMD
 			{
 				Tar.ExtractTarGz(stream, ".");
 				chmod("steamcmd.sh", 0x100 | 0x40);
-				chmod("steamcmd", 0x100 | 0x40);
+				chmod("linux32/steamcmd", 0x100 | 0x40);
 			}
 		}
 
