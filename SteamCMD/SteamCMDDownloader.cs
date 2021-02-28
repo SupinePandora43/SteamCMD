@@ -44,8 +44,11 @@ namespace SteamCMD
 			else
 			{
 				Tar.ExtractTarGz(stream, ".");
-				File.SetAttributes("steamcmd.sh", FileAttributes.ReadOnly);
+				chmod("steamcmd.sh", 1);
 			}
 		}
+
+		[DllImport("libc", SetLastError = true)]
+		private static extern int chmod(string pathname, int mode);
 	}
 }
