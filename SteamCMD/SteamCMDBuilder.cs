@@ -50,7 +50,9 @@ namespace SteamCMD
 			{
 				Process process = Process.Start(
 					new ProcessStartInfo(
-						"steamcmd",
+						RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+						? "steamcmd.exe"
+						: "steamcmd.sh",
 						args + " +quit"
 					)
 				);
